@@ -311,3 +311,152 @@ Las cuatro partes tienen un orden lógico (contexto → asistente → robustez �
 3. Resultado del benchmark y modelo elegido.
 4. Riesgo principal si lo desplegarais mañana.
 5. Mostrar conclusiones reflejadas en vuestros entregables.
+
+## Cómo ejecutar el proyecto
+
+### 1. Descripción del proyecto
+
+Employee Onboarding Assistant es un asistente de incorporación de empleados para la empresa ficticia Bridge SA. Ayuda a los nuevos empleados durante sus primeros cinco días mediante respuestas basadas en la documentación interna, listas de tareas y derivación de consultas cuando no dispone de información suficiente.
+
+El proyecto utiliza Python y modelos de Google Gemini.
+
+### 2. Requisitos previos
+
+* Python 3.10 o superior.
+* Una API key de Google Gemini.
+* Git, si se desea clonar el repositorio.
+
+### 3. Instalación
+
+Clona el repositorio y entra en la carpeta del proyecto:
+
+```bash
+git clone URL_DEL_REPOSITORIO
+cd project_employee
+```
+
+Crea y activa un entorno virtual.
+
+**Windows:**
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+Instala las dependencias:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configuración de la API key
+
+Copia el archivo de ejemplo `.env.example` y crea tu propio archivo `.env`:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Abre `.env` y añade tu clave de API utilizando el nombre de variable indicado en `.env.example`.
+
+**Importante:** no compartas ni subas el archivo `.env` a GitHub. El archivo `.gitignore` debe excluir tanto `.env` como `.venv/`.
+
+### 5. Ejecución del asistente
+
+Desde la carpeta raíz del proyecto, ejecuta:
+
+```bash
+python src/main.py
+```
+
+El programa mostrará la lista de empleados disponibles. Después de seleccionar un empleado, aparecerá un menú con las siguientes opciones:
+
+1. **Chatear con el asistente:** permite consultar dudas relacionadas con el proceso de incorporación.
+2. **Generar checklist:** crea una lista de tareas de onboarding adaptada al empleado y al día correspondiente.
+3. **Marcar tarea como entregada:** permite actualizar el estado de una tarea completada.
+
+Estas funcionalidades ayudan a gestionar el proceso de incorporación de cada empleado durante sus primeros cinco días.
+
+
+
+### 6. Demos del proyecto
+
+El proyecto contempla tres demostraciones principales:
+
+1. **Conversación con el asistente:** permite a un empleado realizar preguntas sobre su incorporación y recibir respuestas adaptadas a su perfil.
+2. **Generación de checklist en JSON:** crea una lista de tareas de onboarding para el empleado seleccionado y guarda el resultado en la carpeta `output/`.
+3. **Adaptación al perfil del empleado:** compara las respuestas del asistente ante una misma pregunta para perfiles diferentes, como un empleado de Sales y un empleado remoto de Engineering en la UE.
+
+Para acceder a las dos primeras funcionalidades, ejecuta el programa principal:
+
+```bash
+python src/main.py
+```
+
+Selecciona un empleado y elige la acción correspondiente en el menú.
+
+La tercera demostración debe realizarse con dos perfiles y la misma pregunta, documentando las diferencias observadas en las respuestas.
+
+
+### 7. Pruebas de robustez
+
+Para ejecutar la demostración de comportamiento vulnerable frente al comportamiento seguro:
+
+```bash
+python src/probar_robustez.py
+```
+
+Para ejecutar los casos trampa automatizados:
+
+```bash
+python src/probar_casos_trampa.py
+```
+
+Los casos evalúan situaciones como intentos de inyección de instrucciones, preguntas sobre datos salariales, consultas fuera del ámbito del onboarding, políticas no documentadas y preguntas ambiguas.
+
+Los tres primeros casos se ejecutan automáticamente. Los dos restantes requieren una comprobación manual de las respuestas del asistente.
+
+### 8. Benchmark de modelos
+
+Para ejecutar la comparación de los dos modelos:
+
+```bash
+python src/benchmark.py
+```
+
+Para generar el informe a partir de los resultados obtenidos:
+
+```bash
+python src/informe_benchmark.py
+```
+
+Los resultados se guardan en la carpeta `output/`. La comparación contempla métricas como la latencia y el uso de tokens. Las consultas bloqueadas por las validaciones locales no generan llamadas al modelo, por lo que no se incluyen en el cálculo de la latencia media.
+
+Los resultados deben interpretarse teniendo en cuenta las limitaciones de las pruebas realizadas. El benchmark permite comparar el comportamiento observado en los casos seleccionados, pero no garantiza que el asistente sea inmune a todos los intentos de manipulación.
+
+
+### 9. Estructura del proyecto
+
+* `src/`: código del asistente, configuración, contexto, prompts, validaciones y pruebas.
+* `data/`: documentación de Bridge SA, preguntas frecuentes y perfiles de empleados.
+* `entregables/`: matriz de decisión, recomendación y rúbrica del benchmark.
+* `output/`: resultados e informes del benchmark.
+* `.env`: Configuración de las variables de entorno.
+* `requirements.txt`: dependencias necesarias para ejecutar el proyecto.
+
+### Estrategia de selección de contexto
+
+El asistente selecciona un máximo de tres documentos y dos preguntas frecuentes por consulta, utilizando coincidencias con las palabras de la pregunta y el departamento del empleado. De esta forma, limita el contexto enviado al modelo y prioriza la información relevante para la consulta. El historial conversacional se limita a cuatro turnos.
+
+
+### 10. Seguridad y limitaciones
+
+El asistente utiliza validaciones de entrada y documentación interna seleccionada para reducir respuestas no fundamentadas y rechazar consultas fuera de su ámbito.
+
+Estas medidas reducen algunos riesgos, pero no garantizan una protección completa frente a todos los ataques o errores del modelo. Las respuestas deben evaluarse antes de utilizar el sistema en un entorno real.
+
+### 11. Resultados y conclusiones
+
+Los resultados del benchmark, los criterios de selección del modelo y las conclusiones del equipo se encuentran en `output/` y en los documentos de la carpeta `entregables/`.
+
