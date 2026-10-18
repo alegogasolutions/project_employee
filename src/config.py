@@ -1,0 +1,10 @@
+
+MODEL = "gemini-3.5-flash-lite"
+
+MODEL_BENCHMARK = "gemini-3.1-flash-lite"
+
+TEMPERATURE_TEXTO = 0.3
+TEMPERATURE_JSON = 0
+
+MAX_TOKENS_INPUT = 8000
+MAX_TURNOS = 4
